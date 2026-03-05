@@ -1,0 +1,13 @@
+# Target labels
+ l6_e2
+# Source files and their labels
+C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/CMakeFiles/l6_e2
+C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/CMakeFiles/l6_e2.rule
+C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/CMakeFiles/l6_e2-complete.rule
+C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/l6_e2-prefix/src/l6_e2-stamp/l6_e2-build.rule
+C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/l6_e2-prefix/src/l6_e2-stamp/l6_e2-configure.rule
+C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/l6_e2-prefix/src/l6_e2-stamp/l6_e2-download.rule
+C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/l6_e2-prefix/src/l6_e2-stamp/l6_e2-install.rule
+C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/l6_e2-prefix/src/l6_e2-stamp/l6_e2-mkdir.rule
+C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/l6_e2-prefix/src/l6_e2-stamp/l6_e2-patch.rule
+C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/l6_e2-prefix/src/l6_e2-stamp/l6_e2-update.rule
