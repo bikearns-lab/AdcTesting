@@ -72,7 +72,7 @@ void battery_sample_timer_handler(struct k_timer *timer)
 }
 
   /* STEP 7.3 - Calculate and print voltage */
-  int battery_voltage = ((600*6) * sample) / ((1<<12));
+  int battery_voltage = ((600) * sample) / ((1<<12));
 
   /*register uart callback function*/
 int ret;
@@ -106,7 +106,7 @@ static void configure_saadc(void)
         }
 
         /* STEP 5.3 - Configure the SAADC channel */
-        channel.channel_config.gain = NRF_SAADC_GAIN1_6;
+        channel.channel_config.gain = NRF_SAADC_GAIN1;
         err = nrfx_saadc_channels_config(&channel, 1);
         if (err != 0) {
         printk("nrfx_saadc_channels_config error: %08x", err);
