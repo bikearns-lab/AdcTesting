@@ -78,11 +78,11 @@ void battery_sample_timer_handler(struct k_timer *timer)
 int ret;
 ret = uart_callback_set(uart, uart_cb, NULL);
   if (ret) {
-        return 1;
+        return;
   }
  ret= uart_tx(uart, battery_voltage,sizeof(battery_voltage), SYS_FOREVER_US);
  if (ret) {
-        return 1;
+        return;
  }
 
 
