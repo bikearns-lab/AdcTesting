@@ -36,6 +36,7 @@ void *user_data)
 static int uart_init(void)
 {
         int err;
+        //printk("Uart initil");
 
         uart = DEVICE_DT_GET(DT_NODELABEL(uart0));
         if (!device_is_ready(uart)) {
@@ -46,6 +47,7 @@ static int uart_init(void)
         if (err) {
                 return err;
         }
+       // printk("Uart is init");
         return 0;
 }
 
@@ -67,27 +69,29 @@ void battery_sample_timer_handler(struct k_timer *timer)
   /* Step 7.2 - Trigger the sampling */
   nrfx_err_t err = nrfx_saadc_mode_trigger();
         if (err != 0) {
-	printk("nrfx_saadc_mode_trigger error: %08x", err);
-	return;
+	//printk("nrfx_saadc_mode_trigger error: %08x", err);
+	//printk("ADC reading");
+        return;
 }
 
   /* STEP 7.3 - Calculate and print voltage */
   int battery_voltage = ((600*6) * sample) / ((1<<12));
+      // printk("Voltage: %d\n\r", battery_voltage);
 
 
-static uint8_t tx_buf[6]; // 2 (Start) + 2 (Size) + 2 (Data)
+static uint8_t tx_buf[2]; // 2 (Start) + 2 (Size) + 2 (Data)
 
 // Frame Start (CD AB)
-tx_buf[0] = 0xCD;
-tx_buf[1] = 0xAB;
+//tx_buf[0] = 0xCD;
+//tx_buf[1] = 0xAB;
 
 //Payload Size (2 bytes for a uint16)
-tx_buf[2] = 0x02; 
-tx_buf[3] = 0x00;
+//tx_buf[2] = 0x02; 
+//tx_buf[3] = 0x00;
 
 // (Little Endian)
-tx_buf[4] = (uint8_t)(battery_voltage & 0xFF); //low byte
-tx_buf[5] = (uint8_t)((battery_voltage >> 8) & 0xFF); //high byte
+tx_buf[0] = (uint8_t)(battery_voltage & 0xFF); //low byte
+tx_buf[1] = (uint8_t)((battery_voltage >> 8) & 0xFF); //high byte
 
 k_sem_take(&uart_tx_done, K_FOREVER);
 
@@ -117,7 +121,7 @@ static void configure_saadc(void)
         /* STEP 5.2 - Initialize the nrfx_SAADC driver */
         nrfx_err_t err = nrfx_saadc_init(DT_IRQ(DT_NODELABEL(adc), priority));
         if (err != 0) {
-        printk("nrfx_saadc_mode_trigger error: %08x", err);
+       // printk("nrfx_saadc_mode_trigger error: %08x", err);
         return;
         }
 
@@ -125,7 +129,7 @@ static void configure_saadc(void)
         channel.channel_config.gain = NRF_SAADC_GAIN1_6;
         err = nrfx_saadc_channels_config(&channel, 1);
         if (err != 0) {
-        printk("nrfx_saadc_channels_config error: %08x", err);
+      //  printk("nrfx_saadc_channels_config error: %08x", err);
         return;
         }
 
@@ -135,7 +139,7 @@ static void configure_saadc(void)
                                  NRF_SAADC_OVERSAMPLE_DISABLED,
                                  NULL);
         if (err != 0) {
-        printk("nrfx_saadc_simple_mode_set error: %08x", err);
+     //   printk("nrfx_saadc_simple_mode_set error: %08x", err);
          return;
         }
 
@@ -143,7 +147,7 @@ static void configure_saadc(void)
         /* STEP 5.5 - Set buffer where sample will be stored */
         err = nrfx_saadc_buffer_set(&sample, 1);
         if (err != 0) {
-        printk("nrfx_saadc_buffer_set error: %08x", err);
+     //   printk("nrfx_saadc_buffer_set error: %08x", err);
          return;
         }
 
@@ -158,10 +162,11 @@ int main(void)
 {
             /* STEP 4.2 - Verify that the UART device is ready */
         if (!device_is_ready(uart)) {
-        printk("UART device not ready\n");
+     //   printk("UART device not ready\n");
         return 1;
 
     }
+    configure_saadc();
     uart_init();
     int ret;
         ret = uart_callback_set(uart, uart_cb, NULL);
@@ -170,7 +175,7 @@ int main(void)
         }
         
 
-        configure_saadc();
+        
         
        
         k_sleep(K_FOREVER);

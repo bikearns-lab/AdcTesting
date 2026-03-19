@@ -74,11 +74,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/adc/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
   include("C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/clock_control/cmake_install.cmake")
 endif()
 

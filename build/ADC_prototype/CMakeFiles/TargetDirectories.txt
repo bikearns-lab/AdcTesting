@@ -174,9 +174,6 @@ C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/usb/common/
 C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/usb/common/nrf_usbd_common/CMakeFiles/rebuild_cache.dir
 C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/usb_c/CMakeFiles/edit_cache.dir
 C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/usb_c/CMakeFiles/rebuild_cache.dir
-C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/adc/CMakeFiles/drivers__adc.dir
-C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/adc/CMakeFiles/edit_cache.dir
-C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/adc/CMakeFiles/rebuild_cache.dir
 C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/clock_control/CMakeFiles/drivers__clock_control.dir
 C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/clock_control/CMakeFiles/edit_cache.dir
 C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype/zephyr/drivers/clock_control/CMakeFiles/rebuild_cache.dir
