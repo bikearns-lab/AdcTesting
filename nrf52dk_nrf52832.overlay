@@ -13,3 +13,6 @@
 &adc {
     status = "disabled";
 };
+&uart0 {
+    status = "okay";
+};

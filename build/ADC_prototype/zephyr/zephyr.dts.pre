@@ -1036,5 +1036,8 @@ arduino_spi: &spi2 {
 &adc {
     status = "disabled";
 };
+&uart0 {
+    status = "okay";
+};
 # 0 "<command-line>" 2
 # 1 "C:/ncs/v3.2.1/zephyr/misc/empty_file.c"

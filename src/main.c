@@ -74,21 +74,31 @@ void battery_sample_timer_handler(struct k_timer *timer)
   /* STEP 7.3 - Calculate and print voltage */
   int battery_voltage = ((600*6) * sample) / ((1<<12));
 
-  /*register uart callback function*/
-int ret;
-ret = uart_callback_set(uart, uart_cb, NULL);
-  if (ret) {
-        return;
-  }
- static uint8_t tx_buf[2];
-tx_buf[0] = (uint8_t)(battery_voltage & 0xFF);        // low byte
-tx_buf[1] = (uint8_t)((battery_voltage >> 8) & 0xFF); // high byte
+
+static uint8_t tx_buf[6]; // 2 (Start) + 2 (Size) + 2 (Data)
+
+// Frame Start (CD AB)
+tx_buf[0] = 0xCD;
+tx_buf[1] = 0xAB;
+
+//Payload Size (2 bytes for a uint16)
+tx_buf[2] = 0x02; 
+tx_buf[3] = 0x00;
+
+// (Little Endian)
+tx_buf[4] = (uint8_t)(battery_voltage & 0xFF); //low byte
+tx_buf[5] = (uint8_t)((battery_voltage >> 8) & 0xFF); //high byte
 
 k_sem_take(&uart_tx_done, K_FOREVER);
-ret = uart_tx(uart, tx_buf, sizeof(tx_buf), SYS_FOREVER_US);
+
+int ret = uart_tx(uart, tx_buf, sizeof(tx_buf), SYS_FOREVER_US);
 if (ret) {
     return;
 }
+
+
+
+
 
 
 
@@ -150,8 +160,15 @@ int main(void)
         if (!device_is_ready(uart)) {
         printk("UART device not ready\n");
         return 1;
+
     }
-        uart_init();
+    uart_init();
+    int ret;
+        ret = uart_callback_set(uart, uart_cb, NULL);
+         if (ret) {
+        return ret;
+        }
+        
 
         configure_saadc();
         

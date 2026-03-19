@@ -17,6 +17,6 @@ cmake:
      - 'C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/empty.conf'
 version: '0.1.0'
 west:
-  command: 'C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west build --build-dir c:/ncs/ncs-inter/l6/ADC_prototype/build c:/ncs/ncs-inter/l6/ADC_prototype --pristine --board nrf52dk/nrf52832 --sysbuild -- -DCONFIG_DEBUG_THREAD_INFO=y -DCONF_FILE=prj.conf -DDTC_OVERLAY_FILE=nrf52dk_nrf52832.overlay'
+  command: 'C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west build --build-dir c:/ncs/ncs-inter/l6/ADC_prototype/build c:/ncs/ncs-inter/l6/ADC_prototype --pristine --board nrf52dk/nrf52832 --sysbuild -- -DCONF_FILE=prj.conf -DDTC_OVERLAY_FILE=nrf52dk_nrf52832.overlay -DDEBUG_THREAD_INFO=On -DCONFIG_DEBUG_THREAD_INFO=y -DADC_prototype_DEBUG_THREAD_INFO=On'
   topdir: 'c:\ncs\v3.2.1'
   version: '1.4.0'

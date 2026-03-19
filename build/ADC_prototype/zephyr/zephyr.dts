@@ -162,13 +162,13 @@
 		uart0: arduino_serial: uart@40002000 {
 			reg = < 0x40002000 0x1000 >;     /* in zephyr\dts\arm\nordic\nrf52832.dtsi:131 */
 			interrupts = < 0x2 0x1 >;        /* in zephyr\dts\arm\nordic\nrf52832.dtsi:132 */
-			status = "okay";                 /* in zephyr\boards\nordic\nrf52dk\nrf52dk_nrf52832.dts:171 */
 			compatible = "nordic,nrf-uarte"; /* in zephyr\boards\nordic\nrf52dk\nrf52dk_nrf52832.dts:172 */
 			current-speed = < 0xe1000 >;     /* in zephyr\boards\nordic\nrf52dk\nrf52dk_nrf52832.dts:173 */
 			pinctrl-0 = < &uart0_default >;  /* in zephyr\boards\nordic\nrf52dk\nrf52dk_nrf52832.dts:174 */
 			pinctrl-1 = < &uart0_sleep >;    /* in zephyr\boards\nordic\nrf52dk\nrf52dk_nrf52832.dts:175 */
 			pinctrl-names = "default",
 			                "sleep";         /* in zephyr\boards\nordic\nrf52dk\nrf52dk_nrf52832.dts:176 */
+			status = "okay";                 /* in ..\ncs-inter\l6\ADC_prototype\build\ADC_prototype\zephyr\nrf52dk_nrf52832.overlay:17 */
 		};
 
 		/* node '/soc/i2c@40003000' defined in zephyr\dts\arm\nordic\nrf52832.dtsi:136 */

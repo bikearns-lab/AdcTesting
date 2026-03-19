@@ -14,6 +14,9 @@
 # EXTERNAL cache entries
 ########################
 
+//No help, variable specified on the command line.
+ADC_prototype_DEBUG_THREAD_INFO:UNINITIALIZED=On
+
 //Application Binary Directory
 APPLICATION_BINARY_DIR:PATH=C:/ncs/ncs-inter/l6/ADC_prototype/build
 
@@ -77,6 +80,9 @@ CONFIG_DEBUG_THREAD_INFO:UNINITIALIZED=y
 
 //No help, variable specified on the command line.
 CONF_FILE:UNINITIALIZED=prj.conf
+
+//No help, variable specified on the command line.
+DEBUG_THREAD_INFO:UNINITIALIZED=On
 
 //No help, variable specified on the command line.
 DTC_OVERLAY_FILE:UNINITIALIZED=nrf52dk_nrf52832.overlay
