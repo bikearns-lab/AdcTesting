@@ -1,8 +1,8 @@
-C:\ncs\ncs-inter\l6\l6_e2\build\Kconfig\Kconfig.sysbuild.modules
-C:\ncs\ncs-inter\l6\l6_e2\build\Kconfig\boards\Kconfig.nrf52dk
-C:\ncs\ncs-inter\l6\l6_e2\build\Kconfig\boards\Kconfig.sysbuild
-C:\ncs\ncs-inter\l6\l6_e2\build\Kconfig\soc\Kconfig.soc
-C:\ncs\ncs-inter\l6\l6_e2\build\Kconfig\soc\Kconfig.sysbuild
+C:\ncs\ncs-inter\l6\ADC_prototype\build\Kconfig\Kconfig.sysbuild.modules
+C:\ncs\ncs-inter\l6\ADC_prototype\build\Kconfig\boards\Kconfig.nrf52dk
+C:\ncs\ncs-inter\l6\ADC_prototype\build\Kconfig\boards\Kconfig.sysbuild
+C:\ncs\ncs-inter\l6\ADC_prototype\build\Kconfig\soc\Kconfig.soc
+C:\ncs\ncs-inter\l6\ADC_prototype\build\Kconfig\soc\Kconfig.sysbuild
 C:\ncs\v3.2.1\nrf\soc\nordic\Kconfig.soc
 C:\ncs\v3.2.1\nrf\soc\nordic\Kconfig.sysbuild
 C:\ncs\v3.2.1\nrf\soc\nordic\common\vpr\Kconfig.sysbuild

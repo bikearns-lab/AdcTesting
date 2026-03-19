@@ -1,7 +1,7 @@
-default: l6_e2
-build_dir: C:/ncs/ncs-inter/l6/l6_e2/build
+default: ADC_prototype
+build_dir: C:/ncs/ncs-inter/l6/ADC_prototype/build
 domains:
-  - name: l6_e2
-    build_dir: C:/ncs/ncs-inter/l6/l6_e2/build/l6_e2
+  - name: ADC_prototype
+    build_dir: C:/ncs/ncs-inter/l6/ADC_prototype/build/ADC_prototype
 flash_order:
-  - l6_e2
+  - ADC_prototype

@@ -1,0 +1,13 @@
+# Target labels
+ ADC_prototype
+# Source files and their labels
+C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/CMakeFiles/ADC_prototype
+C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/CMakeFiles/ADC_prototype.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/CMakeFiles/ADC_prototype-complete.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/ADC_prototype-prefix/src/ADC_prototype-stamp/ADC_prototype-build.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/ADC_prototype-prefix/src/ADC_prototype-stamp/ADC_prototype-configure.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/ADC_prototype-prefix/src/ADC_prototype-stamp/ADC_prototype-download.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/ADC_prototype-prefix/src/ADC_prototype-stamp/ADC_prototype-install.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/ADC_prototype-prefix/src/ADC_prototype-stamp/ADC_prototype-mkdir.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/ADC_prototype-prefix/src/ADC_prototype-stamp/ADC_prototype-patch.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/ADC_prototype-prefix/src/ADC_prototype-stamp/ADC_prototype-update.rule

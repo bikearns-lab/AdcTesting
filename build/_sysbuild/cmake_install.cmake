@@ -34,6 +34,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/sysbuild/images/cmake_install.cmake")
+  include("C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/sysbuild/images/cmake_install.cmake")
 endif()
 

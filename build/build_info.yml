@@ -8,18 +8,18 @@ cmake:
     qualifiers: 'nrf52832'
     revision: ''
   images:
-   - name: 'l6_e2'
-     source-dir: 'C:/ncs/ncs-inter/l6/l6_e2'
+   - name: 'ADC_prototype'
+     source-dir: 'C:/ncs/ncs-inter/l6/ADC_prototype'
      type: 'MAIN'
   kconfig:
     files:
-     - 'C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/empty.conf'
-     - 'C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/empty.conf'
+     - 'C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/empty.conf'
+     - 'C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/empty.conf'
     user-files:
-     - 'C:/ncs/ncs-inter/l6/l6_e2/build/_sysbuild/empty.conf'
+     - 'C:/ncs/ncs-inter/l6/ADC_prototype/build/_sysbuild/empty.conf'
   sysbuild: 'true'
 version: '0.1.0'
 west:
-  command: 'C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west build --build-dir c:/ncs/ncs-inter/l6/l6_e2/build c:/ncs/ncs-inter/l6/l6_e2 --pristine --board nrf52dk/nrf52832 --sysbuild -- -DCONFIG_DEBUG_THREAD_INFO=y -DCONF_FILE=prj.conf -DDTC_OVERLAY_FILE=nrf52dk_nrf52832.overlay'
+  command: 'C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west build --build-dir c:/ncs/ncs-inter/l6/ADC_prototype/build c:/ncs/ncs-inter/l6/ADC_prototype --pristine --board nrf52dk/nrf52832 --sysbuild -- -DCONFIG_DEBUG_THREAD_INFO=y -DCONF_FILE=prj.conf -DDTC_OVERLAY_FILE=nrf52dk_nrf52832.overlay'
   topdir: 'c:\ncs\v3.2.1'
   version: '1.4.0'

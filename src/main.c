@@ -72,7 +72,7 @@ void battery_sample_timer_handler(struct k_timer *timer)
 }
 
   /* STEP 7.3 - Calculate and print voltage */
-  int battery_voltage = ((600) * sample) / ((1<<12));
+  int battery_voltage = ((600*6) * sample) / ((1<<12));
 
   /*register uart callback function*/
 int ret;
@@ -80,10 +80,16 @@ ret = uart_callback_set(uart, uart_cb, NULL);
   if (ret) {
         return;
   }
- ret= uart_tx(uart, battery_voltage,sizeof(battery_voltage), SYS_FOREVER_US);
- if (ret) {
-        return;
- }
+ static uint8_t tx_buf[2];
+tx_buf[0] = (uint8_t)(battery_voltage & 0xFF);        // low byte
+tx_buf[1] = (uint8_t)((battery_voltage >> 8) & 0xFF); // high byte
+
+k_sem_take(&uart_tx_done, K_FOREVER);
+ret = uart_tx(uart, tx_buf, sizeof(tx_buf), SYS_FOREVER_US);
+if (ret) {
+    return;
+}
+
 
 
 
@@ -106,7 +112,7 @@ static void configure_saadc(void)
         }
 
         /* STEP 5.3 - Configure the SAADC channel */
-        channel.channel_config.gain = NRF_SAADC_GAIN1;
+        channel.channel_config.gain = NRF_SAADC_GAIN1_6;
         err = nrfx_saadc_channels_config(&channel, 1);
         if (err != 0) {
         printk("nrfx_saadc_channels_config error: %08x", err);
@@ -145,10 +151,11 @@ int main(void)
         printk("UART device not ready\n");
         return 1;
     }
-        configure_saadc();
-        
         uart_init();
 
+        configure_saadc();
+        
+       
         k_sleep(K_FOREVER);
         return 0;
 }
