@@ -1,0 +1,7 @@
+default: l6_e3
+build_dir: C:/ncs/ncs-inter/l6/l6_e3/build
+domains:
+  - name: l6_e3
+    build_dir: C:/ncs/ncs-inter/l6/l6_e3/build/l6_e3
+flash_order:
+  - l6_e3

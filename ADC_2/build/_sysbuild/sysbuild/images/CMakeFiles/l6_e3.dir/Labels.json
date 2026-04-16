@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/ncs/ncs-inter/l6/l6_e3/build/_sysbuild/sysbuild/images/CMakeFiles/l6_e3"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/l6_e3/build/_sysbuild/sysbuild/images/CMakeFiles/l6_e3.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/l6_e3/build/_sysbuild/sysbuild/images/CMakeFiles/l6_e3-complete.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/l6_e3/build/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-build.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/l6_e3/build/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-configure.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/l6_e3/build/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-download.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/l6_e3/build/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-install.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/l6_e3/build/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-mkdir.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/l6_e3/build/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-patch.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/l6_e3/build/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"l6_e3"
+		],
+		"name" : "l6_e3"
+	}
+}

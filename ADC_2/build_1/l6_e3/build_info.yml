@@ -1,0 +1,57 @@
+cmake:
+  application:
+    configuration-dir: 'C:/ncs/ncs-inter/l6/l6_e3'
+    source-dir: 'C:/ncs/ncs-inter/l6/l6_e3'
+  board:
+    name: 'nrf54l15dk'
+    path:
+     - 'C:/ncs/v3.2.1/zephyr/boards/nordic/nrf54l15dk'
+    qualifiers: 'nrf54l15/cpuapp'
+    revision: ''
+  devicetree:
+    bindings-dirs:
+     - 'C:/ncs/v3.2.1/nrf/dts/bindings'
+     - 'C:/ncs/v3.2.1/zephyr/dts/bindings'
+    files:
+     - 'C:/ncs/v3.2.1/zephyr/boards/nordic/nrf54l15dk/nrf54l15dk_nrf54l15_cpuapp.dts'
+     - 'nrf54dk_nrf54l15.overlay'
+    include-dirs:
+     - 'C:/ncs/v3.2.1/nrf/include'
+     - 'C:/ncs/v3.2.1/nrf/dts/common'
+     - 'C:/ncs/v3.2.1/nrf/dts/riscv'
+     - 'C:/ncs/v3.2.1/nrf/dts/arm'
+     - 'C:/ncs/v3.2.1/nrf/dts'
+     - 'C:/ncs/v3.2.1/zephyr/include'
+     - 'C:/ncs/v3.2.1/zephyr/include/zephyr'
+     - 'C:/ncs/v3.2.1/zephyr/dts/common'
+     - 'C:/ncs/v3.2.1/zephyr/dts/vendor'
+     - 'C:/ncs/v3.2.1/zephyr/dts/rx'
+     - 'C:/ncs/v3.2.1/zephyr/dts/x86'
+     - 'C:/ncs/v3.2.1/zephyr/dts/xtensa'
+     - 'C:/ncs/v3.2.1/zephyr/dts/sparc'
+     - 'C:/ncs/v3.2.1/zephyr/dts/riscv'
+     - 'C:/ncs/v3.2.1/zephyr/dts/posix'
+     - 'C:/ncs/v3.2.1/zephyr/dts/arm64'
+     - 'C:/ncs/v3.2.1/zephyr/dts/arm'
+     - 'C:/ncs/v3.2.1/zephyr/dts/arc'
+     - 'C:/ncs/v3.2.1/zephyr/dts'
+    user-files:
+     - 'nrf54dk_nrf54l15.overlay'
+  kconfig:
+    files:
+     - 'C:/ncs/v3.2.1/zephyr/boards/nordic/nrf54l15dk/nrf54l15dk_nrf54l15_cpuapp_defconfig'
+     - 'C:/ncs/ncs-inter/l6/l6_e3/prj.conf'
+     - 'C:/ncs/ncs-inter/l6/l6_e3/build_1/l6_e3/zephyr/misc/generated/extra_kconfig_options.conf'
+     - 'C:/ncs/ncs-inter/l6/l6_e3/build_1/l6_e3/zephyr/.config.sysbuild'
+    user-files:
+     - 'prj.conf'
+  toolchain:
+    name: 'zephyr'
+    path: 'C:/ncs/toolchains/66cdf9b75e/opt/zephyr-sdk'
+  vendor-specific:
+    nordic:
+      svdfile: 'C:/ncs/v3.2.1/modules/hal/nordic/nrfx/bsp/stable/mdk/nrf54l15_application.svd'
+  zephyr:
+    version: '4.2.99'
+    zephyr-base: 'C:/ncs/v3.2.1/zephyr'
+version: '0.1.0'

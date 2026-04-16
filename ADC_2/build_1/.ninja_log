@@ -1,0 +1,11 @@
+# ninja log v5
+2	893	7980723018796834	_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-mkdir	c69b5cdacabed497
+2	893	7980723018796834	C:/ncs/ncs-inter/l6/l6_e3/build_1/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-mkdir	c69b5cdacabed497
+893	1052	7980723020385685	_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-download	9e1dc7f8538f8635
+893	1052	7980723020385685	C:/ncs/ncs-inter/l6/l6_e3/build_1/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-download	9e1dc7f8538f8635
+1052	1228	7980723022080684	_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-update	b063a6667fae385f
+1052	1228	7980723022080684	C:/ncs/ncs-inter/l6/l6_e3/build_1/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-update	b063a6667fae385f
+1229	1401	7980723023864938	_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-patch	35c371243e3c88a1
+1229	1401	7980723023864938	C:/ncs/ncs-inter/l6/l6_e3/build_1/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-patch	35c371243e3c88a1
+1401	1572	7980723025574908	_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-configure	5f42b0b12a5b1329
+1401	1572	7980723025574908	C:/ncs/ncs-inter/l6/l6_e3/build_1/_sysbuild/sysbuild/images/l6_e3-prefix/src/l6_e3-stamp/l6_e3-configure	5f42b0b12a5b1329
