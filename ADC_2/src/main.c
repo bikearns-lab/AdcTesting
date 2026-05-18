@@ -27,15 +27,16 @@ LOG_MODULE_REGISTER(Lesson6_Exercise3, LOG_LEVEL_DBG);
 #define SAADC_SAMPLE_INTERVAL_US 500
 
 /* STEP 4.1 - Define the buffer size for the SAADC */
-#define SAADC_BUFFER_SIZE 8000
+#define SAADC_BUFFER_SIZE 320
 
 
 /* STEP 4.6 - Declare the struct to hold the configuration for the SAADC channel used to sample the battery voltage */
-#define SAADC_INPUT_PIN NRFX_ANALOG_EXTERNAL_AIN4
-static nrfx_saadc_channel_t channel = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN, 0);
-
+#define SAADC_INPUT_PIN1 NRFX_ANALOG_EXTERNAL_AIN1
+#define SAADC_INPUT_PIN2 NRFX_ANALOG_EXTERNAL_AIN2
+static nrfx_saadc_channel_t channel1 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN1, 0);
+static nrfx_saadc_channel_t channel2 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN2, 0);
 //Define the SPI INIT
-#define SPIOP	SPI_WORD_SET(8) | SPI_TRANSFER_MSB
+#define SPIOP	SPI_WORD_SET(8) | SPI_TRANSFER_MSB //SPI worc set changed to 16, see what happens, change back to 8 if not helpful
 struct spi_dt_spec spispec = SPI_DT_SPEC_GET(DT_NODELABEL(bme280), SPIOP, 0);
 /* STEP 3.2 - Declaring an instance of nrfx_timer for TIMER2. */
 #define TIMER_INSTANCE_NUMBER NRF_TIMER22
@@ -43,12 +44,22 @@ nrfx_timer_t timer_instance = NRFX_TIMER_INSTANCE(TIMER_INSTANCE_NUMBER);
 
 /* STEP 4.2 - Declare the buffers for the SAADC */
 static int16_t saadc_sample_buffer[2][SAADC_BUFFER_SIZE];
-
+//establishing a message queue for SAADC filled buffer pointers
+K_MSGQ_DEFINE(spi_msgq, sizeof(int16_t *), 4, 4);
+//Begins the spi thread of communication//
+static void spi_thread(void *a, void *b, void *c) {
+    int16_t *buf;
+    while (1) {
+        k_msgq_get(&spi_msgq, &buf, K_FOREVER);
+        spi_send_samples(buf, SAADC_BUFFER_SIZE);
+    }
+}
+K_THREAD_DEFINE(spi_tid, 2048, spi_thread, NULL, NULL, NULL, 5, 0, 0);
 
 /* STEP 4.3 - Declare variable used to keep track of which buffer was last assigned to the SAADC driver */
 static uint32_t saadc_current_buffer = 0;
 
-static int spi_send_samples(int16_t *samples, size_t count)
+int spi_send_samples(int16_t *samples, size_t count)
 {
     int err;
     struct spi_buf tx_spi_buf         = { .buf = (void *)samples,
@@ -85,6 +96,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
     nrfx_err_t err;
     switch (p_event->type)
     {
+
         case NRFX_SAADC_EVT_READY:
         
            /* STEP 5.1 - Buffer is ready, timer (and sampling) can be started. */
@@ -129,18 +141,30 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
 
             /* STEP 5.3 - Buffer has been filled. Do something with the data and proceed */ //This will be changed to instead pass the buffer through SPI to fRAM//
 
-           { int16_t *buf   = ((int16_t *)(p_event->data.done.p_buffer));
-            uint16_t count = (p_event->data.done.size);   /* number of int16_t samples */
+         //  { int16_t *buf   = ((int16_t *)(p_event->data.done.p_buffer));
+           // uint16_t count = (p_event->data.done.size);   /* number of int16_t samples */
 
-             spi_send_samples(buf, count);
+           //  spi_send_samples(buf, count);
 
                 /* Re-arm the same buffer for the next fill */
-            }
+           // }
+           //puts message of filled buffer pointer into queue
+           int16_t *buf = p_event->data.done.p_buffer;
+            k_msgq_put(&spi_msgq, &buf, K_NO_WAIT);
             break;
         }     
        
 
 }
+//seperate thread that ensure filled buffer is retrieved from message queue and sent over SPI 
+// static void spi_thread(void *a, void *b, void *c) {
+//     int16_t *buf;
+//     while (1) {
+//         k_msgq_get(&spi_msgq, &buf, K_FOREVER);
+//         spi_send_samples(buf, SAADC_BUFFER_SIZE);
+//     }
+// }
+
 
 static void configure_saadc(void)
 {
@@ -158,10 +182,18 @@ static void configure_saadc(void)
     }
 
     /* STEP 4.7 - Change gain config in default config and apply channel configuration */
-    channel.channel_config.gain = NRF_SAADC_GAIN1_4;
-    err = nrfx_saadc_channels_config(&channel, 1);
+    channel1.channel_config.gain = NRF_SAADC_GAIN1_4;
+    channel1.channel_config.reference= NRF_SAADC_REFERENCE_INTERNAL;
+    err = nrfx_saadc_channels_config(&channel1, 1);
     if (err != 0) {
         LOG_ERR("nrfx_saadc_channels_config error : %08x", err);
+        return;
+    }
+    channel2.channel_config.gain = NRF_SAADC_GAIN1_4;
+    channel2.channel_config.reference= NRF_SAADC_REFERENCE_INTERNAL;
+    err = nrfx_saadc_channels_config(&channel2, 1);
+    if (err != 0) {
+        LOG_ERR("nrfx_saadc_channels_config error : %08x",err);
         return;
     }
 

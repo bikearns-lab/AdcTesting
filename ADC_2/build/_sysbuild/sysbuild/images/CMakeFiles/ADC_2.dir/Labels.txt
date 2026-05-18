@@ -1,0 +1,13 @@
+# Target labels
+ ADC_2
+# Source files and their labels
+C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/CMakeFiles/ADC_2
+C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/CMakeFiles/ADC_2.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/CMakeFiles/ADC_2-complete.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-build.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-configure.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-download.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-install.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-mkdir.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-patch.rule
+C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-update.rule

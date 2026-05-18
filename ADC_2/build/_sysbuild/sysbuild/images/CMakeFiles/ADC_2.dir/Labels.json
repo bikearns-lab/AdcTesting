@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/CMakeFiles/ADC_2"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/CMakeFiles/ADC_2.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/CMakeFiles/ADC_2-complete.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-build.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-configure.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-download.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-install.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-mkdir.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-patch.rule"
+		},
+		{
+			"file" : "C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/_sysbuild/sysbuild/images/ADC_2-prefix/src/ADC_2-stamp/ADC_2-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"ADC_2"
+		],
+		"name" : "ADC_2"
+	}
+}
