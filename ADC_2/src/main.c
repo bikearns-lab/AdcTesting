@@ -27,23 +27,24 @@ LOG_MODULE_REGISTER(Lesson6_Exercise3, LOG_LEVEL_DBG);
 #define SAADC_SAMPLE_INTERVAL_US 500
 
 /* STEP 4.1 - Define the buffer size for the SAADC */
-#define SAADC_BUFFER_SIZE 320
+#define SAADC_BUFFER_SIZE 16
 
 
 /* STEP 4.6 - Declare the struct to hold the configuration for the SAADC channel used to sample the battery voltage */
-#define SAADC_INPUT_PIN1 NRFX_ANALOG_EXTERNAL_AIN1
-#define SAADC_INPUT_PIN2 NRFX_ANALOG_EXTERNAL_AIN2
+#define SAADC_INPUT_PIN1 NRFX_ANALOG_EXTERNAL_AIN4
+//#define SAADC_INPUT_PIN2 NRFX_ANALOG_EXTERNAL_AIN2
 static nrfx_saadc_channel_t channel1 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN1, 0);
-static nrfx_saadc_channel_t channel2 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN2, 0);
+//static nrfx_saadc_channel_t channel2 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN2, 0);
 //Define the SPI INIT
 #define SPIOP	SPI_WORD_SET(8) | SPI_TRANSFER_MSB //SPI worc set changed to 16, see what happens, change back to 8 if not helpful
 struct spi_dt_spec spispec = SPI_DT_SPEC_GET(DT_NODELABEL(bme280), SPIOP, 0);
 /* STEP 3.2 - Declaring an instance of nrfx_timer for TIMER2. */
 #define TIMER_INSTANCE_NUMBER NRF_TIMER22
 nrfx_timer_t timer_instance = NRFX_TIMER_INSTANCE(TIMER_INSTANCE_NUMBER);
-
+//New added up here hmmmmmm lets see
+static int spi_send_samples(int16_t *samples, size_t count);
 /* STEP 4.2 - Declare the buffers for the SAADC */
-static int16_t saadc_sample_buffer[2][SAADC_BUFFER_SIZE];
+static int16_t saadc_sample_buffer[4][SAADC_BUFFER_SIZE];
 //establishing a message queue for SAADC filled buffer pointers
 K_MSGQ_DEFINE(spi_msgq, sizeof(int16_t *), 4, 4);
 //Begins the spi thread of communication//
@@ -57,7 +58,7 @@ static void spi_thread(void *a, void *b, void *c) {
 K_THREAD_DEFINE(spi_tid, 2048, spi_thread, NULL, NULL, NULL, 5, 0, 0);
 
 /* STEP 4.3 - Declare variable used to keep track of which buffer was last assigned to the SAADC driver */
-static uint32_t saadc_current_buffer = 0;
+static uint32_t saadc_current_buffer = 2;
 
 int spi_send_samples(int16_t *samples, size_t count)
 {
@@ -104,20 +105,46 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
 
             break;                        
             
-        case NRFX_SAADC_EVT_BUF_REQ:
-        
-            /* STEP 5.2 - Set up the next available buffer. Alternate between buffer 0 and 1 */
-            err = nrfx_saadc_buffer_set(saadc_sample_buffer[(saadc_current_buffer++)%2], SAADC_BUFFER_SIZE);
+       case NRFX_SAADC_EVT_BUF_REQ:
+        uint32_t next = saadc_current_buffer % 4;
+           err = nrfx_saadc_buffer_set(saadc_sample_buffer[next], SAADC_BUFFER_SIZE);
             if (err != 0) {
-                LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
-                return;
+            LOG_ERR("nrfx_saadc_buffer_set error: %08x  init", err);
+            return;
             }
-
+            saadc_current_buffer++;
             break;
+         //   uint32_t next = saadc_current_buffer % 4;
+           // err = nrfx_saadc_buffer_set(saadc_sample_buffer[next], SAADC_BUFFER_SIZE);
+            //if (err != 0) {
+            //LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
+            //return;
+            //}
+            //saadc_current_buffer++;
+        
+            /* STEP 5.2 - Set up the next available buffer. Alternate through buffers 0-4 */
+           
+            
+
+           // err = nrfx_saadc_buffer_set(saadc_sample_buffer[(saadc_current_buffer++)%4], SAADC_BUFFER_SIZE);
+            //if (err != 0) {
+              //  LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
+                //return;
+            //}
+
+            //break;
 
         case NRFX_SAADC_EVT_DONE:
+           
+
+           // err = nrfx_saadc_buffer_set(saadc_sample_buffer[next], SAADC_BUFFER_SIZE);
+            //if (err != 0) {
+            //LOG_ERR("nrfx_saadc_buffer_set error: %08x init", err);
+            //return;
+            //}
+           // saadc_current_buffer++;
          /* STEP 5.3 - Buffer has been filled. Do something with the data and proceed */
-            /*int64_t average = 0;
+            int64_t average = 0;
             int16_t max = INT16_MIN;
             int16_t min = INT16_MAX;
             int16_t current_value; 
@@ -134,7 +161,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
             average = average/p_event->data.done.size;
             LOG_INF("SAADC buffer at 0x%x filled with %d samples", (uint32_t)p_event->data.done.p_buffer, p_event->data.done.size);
             LOG_INF("AVG=%d, MIN=%d, MAX=%d", (int16_t)average, min, max);
-            break;*/
+            break;
         //default:
           //  LOG_INF("Unhandled SAADC evt %d", p_event->type);
            // break;
@@ -150,7 +177,15 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
            // }
            //puts message of filled buffer pointer into queue
            int16_t *buf = p_event->data.done.p_buffer;
-            k_msgq_put(&spi_msgq, &buf, K_NO_WAIT);
+           int ret = k_msgq_put(&spi_msgq, &buf, K_NO_WAIT);
+            if (ret != 0) {
+            LOG_ERR("SPI msgq full! Buffer dropped at 0x%x", (uint32_t)buf);
+            }
+            
+
+            break;
+             default:
+            LOG_INF("Unhandled SAADC evt %d", p_event->type);
             break;
         }     
        
@@ -189,13 +224,13 @@ static void configure_saadc(void)
         LOG_ERR("nrfx_saadc_channels_config error : %08x", err);
         return;
     }
-    channel2.channel_config.gain = NRF_SAADC_GAIN1_4;
-    channel2.channel_config.reference= NRF_SAADC_REFERENCE_INTERNAL;
-    err = nrfx_saadc_channels_config(&channel2, 1);
-    if (err != 0) {
-        LOG_ERR("nrfx_saadc_channels_config error : %08x",err);
-        return;
-    }
+    //channel2.channel_config.gain = NRF_SAADC_GAIN1_4;
+    //channel2.channel_config.reference= NRF_SAADC_REFERENCE_INTERNAL;
+    //err = nrfx_saadc_channels_config(&channel2, 1);
+    //if (err != 0) {
+      //  LOG_ERR("nrfx_saadc_channels_config error : %08x",err);
+        //return;
+    //}
 
     /* STEP 4.8 - Configure channel 0 in advanced mode with event handler (non-blocking mode) */
 
@@ -212,14 +247,24 @@ static void configure_saadc(void)
     /* STEP 4.9 - Configure two buffers to make use of double-buffering feature of SAADC */
     err = nrfx_saadc_buffer_set(saadc_sample_buffer[0], SAADC_BUFFER_SIZE);
     if (err != 0) {
-        LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
+        LOG_ERR("nrfx_saadc_buffer_set error: %08x 1", err);
         return;
     }
     err = nrfx_saadc_buffer_set(saadc_sample_buffer[1], SAADC_BUFFER_SIZE);
     if (err != 0) {
-        LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
+        LOG_ERR("nrfx_saadc_buffer_set error: %08x 2", err);
         return;
     }
+   // err = nrfx_saadc_buffer_set(saadc_sample_buffer[2], SAADC_BUFFER_SIZE);
+    //if (err != 0) {
+      //  LOG_ERR("nrfx_saadc_buffer_set error: %08x 3", err);
+        //return;
+    //}
+    //err = nrfx_saadc_buffer_set(saadc_sample_buffer[3], SAADC_BUFFER_SIZE);
+    //if (err != 0) {
+      //  LOG_ERR("nrfx_saadc_buffer_set error: %08x 4", err);
+        //return;
+    //}
 
     /* STEP 4.10 - Trigger the SAADC. This will not start sampling, but will prepare buffer for sampling triggered through PPI */
     err = nrfx_saadc_mode_trigger();
