@@ -121,28 +121,28 @@
 			};
 		};
 
-		/* node '/pin-controller/spi22_default' defined in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:24 */
+		/* node '/pin-controller/spi22_default' defined in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:26 */
 		spi22_default: spi22_default {
-			phandle = < 0x9 >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:9 */
+			phandle = < 0x9 >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:11 */
 
-			/* node '/pin-controller/spi22_default/group1' defined in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:25 */
+			/* node '/pin-controller/spi22_default/group1' defined in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:27 */
 			group1 {
 				psels = < 0x400002b >,
 				        < 0x500002d >,
-				        < 0x6000030 >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:26 */
+				        < 0x6000030 >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:28 */
 			};
 		};
 
-		/* node '/pin-controller/spi22_sleep' defined in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:32 */
+		/* node '/pin-controller/spi22_sleep' defined in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:34 */
 		spi22_sleep: spi22_sleep {
-			phandle = < 0xa >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:10 */
+			phandle = < 0xa >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:12 */
 
-			/* node '/pin-controller/spi22_sleep/group1' defined in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:33 */
+			/* node '/pin-controller/spi22_sleep/group1' defined in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:35 */
 			group1 {
 				psels = < 0x400002b >,
 				        < 0x500002d >,
-				        < 0x6000030 >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:34 */
-				low-power-enable;      /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:37 */
+				        < 0x6000030 >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:36 */
+				low-power-enable;      /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:39 */
 			};
 		};
 	};
@@ -578,19 +578,19 @@
 				easydma-maxcnt-bits = < 0x10 >; /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:393 */
 				rx-delay-supported;             /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:394 */
 				rx-delay = < 0x1 >;             /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:395 */
-				compatible = "nordic,nrf-spim"; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:7 */
-				status = "okay";                /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:8 */
-				pinctrl-0 = < &spi22_default >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:9 */
-				pinctrl-1 = < &spi22_sleep >;   /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:10 */
+				compatible = "nordic,nrf-spim"; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:9 */
+				status = "okay";                /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:10 */
+				pinctrl-0 = < &spi22_default >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:11 */
+				pinctrl-1 = < &spi22_sleep >;   /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:12 */
 				pinctrl-names = "default",
-				                "sleep";        /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:11 */
-				cs-gpios = < &gpio1 0xe 0x1 >;  /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:12 */
+				                "sleep";        /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:13 */
+				cs-gpios = < &gpio1 0xe 0x1 >;  /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:14 */
 
-				/* node '/soc/peripheral@50000000/spi@c8000/bme280@0' defined in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:13 */
+				/* node '/soc/peripheral@50000000/spi@c8000/bme280@0' defined in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:15 */
 				bme280: bme280@0 {
-					compatible = "bosch,bme280";     /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:14 */
-					reg = < 0x0 >;                   /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:15 */
-					spi-max-frequency = < 0xf4240 >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:16 */
+					compatible = "bosch,bme280";     /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:16 */
+					reg = < 0x0 >;                   /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:17 */
+					spi-max-frequency = < 0xf4240 >; /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:18 */
 				};
 			};
 
@@ -725,7 +725,7 @@
 				interrupts = < 0xd5 0x1 >;       /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:509 */
 				#io-channel-cells = < 0x1 >;     /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:511 */
 				zephyr,pm-device-runtime-auto;   /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:512 */
-				status = "okay";                 /* in zephyr\boards\nordic\nrf54l15dk\nrf54l_05_10_15_cpuapp_common.dtsi:142 */
+				status = "disabled";             /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:2 */
 			};
 
 			/* node '/soc/peripheral@50000000/nfct@d6000' defined in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:515 */
@@ -753,8 +753,8 @@
 				ngpios = < 0x10 >;               /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:534 */
 				port = < 0x1 >;                  /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:536 */
 				gpiote-instance = < &gpiote20 >; /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:537 */
-				status = "okay";                 /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:3 */
-				phandle = < 0xb >;               /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:12 */
+				status = "okay";                 /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:5 */
+				phandle = < 0xb >;               /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:14 */
 			};
 
 			/* node '/soc/peripheral@50000000/gpiote@da000' defined in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:540 */

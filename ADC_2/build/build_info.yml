@@ -20,6 +20,6 @@ cmake:
   sysbuild: 'true'
 version: '0.1.0'
 west:
-  command: 'C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west build --build-dir c:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build c:/ncs/ncs-inter/l6/ADC_prototype/ADC_2 --pristine --board nrf54l15dk/nrf54l15/cpuapp --sysbuild -- -DCONFIG_DEBUG_THREAD_INFO=y -DCONF_FILE=prj.conf -DDTC_OVERLAY_FILE=nrf54dk_nrf54l15.overlay'
+  command: 'C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west build --build-dir c:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build c:/ncs/ncs-inter/l6/ADC_prototype/ADC_2 --pristine --board nrf54l15dk/nrf54l15/cpuapp -- -DCONFIG_DEBUG_THREAD_INFO=y -DCONF_FILE=prj.conf -DDTC_OVERLAY_FILE=nrf54dk_nrf54l15.overlay'
   topdir: 'c:\ncs\v3.2.1'
   version: '1.4.0'

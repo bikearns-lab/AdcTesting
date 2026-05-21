@@ -1,4 +1,6 @@
-
+&adc {
+    status = "disabled";
+};
 &gpio1 {
     status = "okay";
 };

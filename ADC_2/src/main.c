@@ -31,7 +31,7 @@ LOG_MODULE_REGISTER(Lesson6_Exercise3, LOG_LEVEL_DBG);
 
 
 /* STEP 4.6 - Declare the struct to hold the configuration for the SAADC channel used to sample the battery voltage */
-#define SAADC_INPUT_PIN1 NRFX_ANALOG_EXTERNAL_AIN4
+#define SAADC_INPUT_PIN1 NRFX_ANALOG_EXTERNAL_AIN5
 //#define SAADC_INPUT_PIN2 NRFX_ANALOG_EXTERNAL_AIN2
 static nrfx_saadc_channel_t channel1 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN1, 0);
 //static nrfx_saadc_channel_t channel2 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN2, 0);
@@ -144,7 +144,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
             //}
            // saadc_current_buffer++;
          /* STEP 5.3 - Buffer has been filled. Do something with the data and proceed */
-            int64_t average = 0;
+          /*  int64_t average = 0;
             int16_t max = INT16_MIN;
             int16_t min = INT16_MAX;
             int16_t current_value; 
@@ -161,7 +161,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
             average = average/p_event->data.done.size;
             LOG_INF("SAADC buffer at 0x%x filled with %d samples", (uint32_t)p_event->data.done.p_buffer, p_event->data.done.size);
             LOG_INF("AVG=%d, MIN=%d, MAX=%d", (int16_t)average, min, max);
-            break;
+            break;*/
         //default:
           //  LOG_INF("Unhandled SAADC evt %d", p_event->type);
            // break;
@@ -193,12 +193,12 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
 }
 //seperate thread that ensure filled buffer is retrieved from message queue and sent over SPI 
 // static void spi_thread(void *a, void *b, void *c) {
-//     int16_t *buf;
-//     while (1) {
-//         k_msgq_get(&spi_msgq, &buf, K_FOREVER);
-//         spi_send_samples(buf, SAADC_BUFFER_SIZE);
-//     }
-// }
+   //  int16_t *buf;
+    // while (1) {
+      //   k_msgq_get(&spi_msgq, &buf, K_FOREVER);
+       //  spi_send_samples(buf, SAADC_BUFFER_SIZE);
+     //}
+ //}
 
 
 static void configure_saadc(void)
@@ -207,7 +207,7 @@ static void configure_saadc(void)
 
     /* STEP 4.4 - Connect ADC interrupt to nrfx interrupt handler */
     IRQ_CONNECT(DT_IRQN(DT_NODELABEL(adc)),
-                DT_IRQ(DT_NODELABEL(adc), priority),
+              DT_IRQ(DT_NODELABEL(adc), priority),
             nrfx_isr, nrfx_saadc_irq_handler, 0);
     /* STEP 4.5 - Initialize the nrfx_SAADC driver */
     err = nrfx_saadc_init(DT_IRQ(DT_NODELABEL(adc), priority));

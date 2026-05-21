@@ -1019,7 +1019,7 @@ set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_NODE|/soc/peripheral@5
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_NODELABEL|adc" "/soc/peripheral@50000000/adc@d5000")
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/soc/peripheral@50000000/adc@d5000|reg" "872448;4096;")
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/soc/peripheral@50000000/adc@d5000|interrupts" "213;1;")
-set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/soc/peripheral@50000000/adc@d5000|status" "okay")
+set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/soc/peripheral@50000000/adc@d5000|status" "disabled")
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/soc/peripheral@50000000/adc@d5000|compatible" "nordic,nrf-saadc;")
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/soc/peripheral@50000000/adc@d5000|zephyr,deferred-init" "False")
 set_target_properties(${DEVICETREE_TARGET} PROPERTIES "DT_PROP|/soc/peripheral@50000000/adc@d5000|wakeup-source" "False")
