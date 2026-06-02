@@ -1,13 +1,9 @@
-/*
- * Copyright (c) 2023 Nordic Semiconductor ASA
- *
- * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
- */
+
 
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
-LOG_MODULE_REGISTER(Lesson6_Exercise3, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(Chronos_adc, LOG_LEVEL_DBG);
 
 /* STEP 2 - Include header for nrfx drivers */
 #include <nrfx_saadc.h>
@@ -18,7 +14,7 @@ LOG_MODULE_REGISTER(Lesson6_Exercise3, LOG_LEVEL_DBG);
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/gpio.h>
-#include <zephyr/drivers/spi.h>
+#include "BLE.h"
 
 
 
@@ -36,43 +32,33 @@ LOG_MODULE_REGISTER(Lesson6_Exercise3, LOG_LEVEL_DBG);
 static nrfx_saadc_channel_t channel1 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN1, 0);
 //static nrfx_saadc_channel_t channel2 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN2, 0);
 //Define the SPI INIT
-#define SPIOP	SPI_WORD_SET(8) | SPI_TRANSFER_MSB //SPI worc set changed to 16, see what happens, change back to 8 if not helpful
-struct spi_dt_spec spispec = SPI_DT_SPEC_GET(DT_NODELABEL(bme280), SPIOP, 0);
+//SPI worc set changed to 16, see what happens, change back to 8 if not helpful
 /* STEP 3.2 - Declaring an instance of nrfx_timer for TIMER2. */
 #define TIMER_INSTANCE_NUMBER NRF_TIMER22
 nrfx_timer_t timer_instance = NRFX_TIMER_INSTANCE(TIMER_INSTANCE_NUMBER);
 //New added up here hmmmmmm lets see
-static int spi_send_samples(int16_t *samples, size_t count);
 /* STEP 4.2 - Declare the buffers for the SAADC */
 static int16_t saadc_sample_buffer[4][SAADC_BUFFER_SIZE];
 //establishing a message queue for SAADC filled buffer pointers
-K_MSGQ_DEFINE(spi_msgq, sizeof(int16_t *), 4, 4);
+K_MSGQ_DEFINE(ble_msgq, sizeof(int16_t *), 4, 4);
 //Begins the spi thread of communication//
-static void spi_thread(void *a, void *b, void *c) {
+static void ble_thread(void *a, void *b, void *c) {
+    k_sem_take(&ble_init_ok, K_FOREVER);
     int16_t *buf;
     while (1) {
-        k_msgq_get(&spi_msgq, &buf, K_FOREVER);
-        spi_send_samples(buf, SAADC_BUFFER_SIZE);
+        k_msgq_get(&ble_msgq, &buf, K_FOREVER);
+        if (!current_conn) {
+            continue;
+        }
+        ble_send_samples(buf, SAADC_BUFFER_SIZE);
     }
 }
-K_THREAD_DEFINE(spi_tid, 2048, spi_thread, NULL, NULL, NULL, 5, 0, 0);
+K_THREAD_DEFINE(ble_tid, 4096, ble_thread, NULL, NULL, NULL, 5, 0, 0);
 
 /* STEP 4.3 - Declare variable used to keep track of which buffer was last assigned to the SAADC driver */
 static uint32_t saadc_current_buffer = 2;
 
-int spi_send_samples(int16_t *samples, size_t count)
-{
-    int err;
-    struct spi_buf tx_spi_buf         = { .buf = (void *)samples,
-                                          .len = count * sizeof(int16_t) };
-    struct spi_buf_set tx_spi_buf_set = { .buffers = &tx_spi_buf, .count = 1 };
 
-    err = spi_write_dt(&spispec, &tx_spi_buf_set);
-    if (err < 0) {
-        LOG_ERR("spi_write_dt() failed, err: %d", err);
-    }
-    return err;
-}
 
 static void configure_timer(void)
 {
@@ -177,9 +163,9 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
            // }
            //puts message of filled buffer pointer into queue
            int16_t *buf = p_event->data.done.p_buffer;
-           int ret = k_msgq_put(&spi_msgq, &buf, K_NO_WAIT);
+           int ret = k_msgq_put(&ble_msgq, &buf, K_NO_WAIT);
             if (ret != 0) {
-            LOG_ERR("SPI msgq full! Buffer dropped at 0x%x", (uint32_t)buf);
+            LOG_ERR("BLE msgq full! Buffer dropped at 0x%x", (uint32_t)buf);
             }
             
 
@@ -191,14 +177,6 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
        
 
 }
-//seperate thread that ensure filled buffer is retrieved from message queue and sent over SPI 
-// static void spi_thread(void *a, void *b, void *c) {
-   //  int16_t *buf;
-    // while (1) {
-      //   k_msgq_get(&spi_msgq, &buf, K_FOREVER);
-       //  spi_send_samples(buf, SAADC_BUFFER_SIZE);
-     //}
- //}
 
 
 static void configure_saadc(void)
@@ -304,10 +282,6 @@ nrfx_gppi_conn_enable(gppi_handle_start);
 
 int main(void)
 { 
-    if (!spi_is_ready_dt(&spispec)) {
-    LOG_ERR("SPI device not ready");
-    return -ENODEV;
-    }
     configure_timer(); 
     configure_saadc();
     configure_ppi(); 

@@ -1448,44 +1448,96 @@ wifi_spi: &spi22 {};
 &adc {
     status = "disabled";
 };
-&gpio1 {
-    status = "okay";
-};
-
-&spi22 {
-    compatible = "nordic,nrf-spim";
- status = "okay";
- pinctrl-0 = <&spi22_default>;
- pinctrl-1 = <&spi22_sleep>;
+# 15 "./nrf54dk_nrf54l15.overlay"
+&spi00 {
+ status = "disabled";
+ pinctrl-0 = <>;
+ pinctrl-1 = <>;
  pinctrl-names = "default", "sleep";
- cs-gpios = <&gpio1 14 (1 << 0)>;
- bme280: bme280@0 {
-  compatible = "bosch,bme280";
-  reg = <0>;
-  spi-max-frequency = <1000000>;
+};
+&mx25r64 {
+ status = "disabled";
+};
+
+&spi20 {
+ status = "okay";
+ pinctrl-0 = <>;
+ pinctrl-1 = <>;
+ pinctrl-names = "default", "sleep";
+};
+
+
+&gpio0 {
+ status = "okay";
+};
+&gpio1 {
+ status = "okay";
+};
+&gpio2 {
+ status = "okay";
+};
+# 52 "./nrf54dk_nrf54l15.overlay"
+&i2c20 { status = "disabled"; };
+&i2c21 { status = "disabled"; };
+&i2c22 { status = "disabled"; };
+&i2c30 { status = "disabled"; };
+
+&spi21 {
+ status = "okay";
+ pinctrl-0 = <>;
+ pinctrl-1 = <>;
+ pinctrl-names = "default", "sleep";
+};
+&spi22 {
+ status = "disabled";
+ pinctrl-0 = <>;
+ pinctrl-1 = <>;
+ pinctrl-names = "default", "sleep";
+};
+&spi30 {
+ status = "disabled";
+ pinctrl-0 = <>;
+ pinctrl-1 = <>;
+ pinctrl-names = "default", "sleep";
+};
+&uart00 { status = "disabled"; };
+&uart20 { status = "disabled"; };
+&uart21 { status = "disabled"; };
+&uart22 { status = "disabled"; };
+&adc { status = "disabled"; };
+&timer20 { status = "okay"; };
+&timer21 { status = "disabled"; };
+&timer22 { status = "disabled"; };
+&timer23 { status = "disabled"; };
+&timer24 { status = "disabled"; };
+&wdt30 { status = "disabled"; };
+&wdt31 { status = "disabled"; };
+&comp { status = "disabled"; };
+&pwm20 { status = "disabled"; };
+&pwm21 { status = "disabled"; };
+&pwm22 { status = "disabled"; };
+&pdm20 { status = "disabled"; };
+&pdm21 { status = "disabled"; };
+&i2s20 { status = "disabled"; };
+&nfct { status = "disabled"; };
+&qdec20 { status = "disabled"; };
+&qdec21 { status = "disabled"; };
+
+
+
+/ {
+ chosen {
+  zephyr,console = &uart30;
+  nordic,nus-uart = &uart30;
  };
 };
 
 
-
-
-&pinctrl {
- spi22_default: spi22_default {
-  group1 {
-    psels = <((((((1) * 32U) + (11)) & 0x1FFU) << 0U) | ((4U & 0xFFU) << 24U))>,
-      <((((((1) * 32U) + (13)) & 0x1FFU) << 0U) | ((5U & 0xFFU) << 24U))>,
-      <((((((1) * 32U) + (16)) & 0x1FFU) << 0U) | ((6U & 0xFFU) << 24U))>;
-  };
- };
-
- spi22_sleep: spi22_sleep {
-  group1 {
-    psels = <((((((1) * 32U) + (11)) & 0x1FFU) << 0U) | ((4U & 0xFFU) << 24U))>,
-      <((((((1) * 32U) + (13)) & 0x1FFU) << 0U) | ((5U & 0xFFU) << 24U))>,
-      <((((((1) * 32U) + (16)) & 0x1FFU) << 0U) | ((6U & 0xFFU) << 24U))>;
-    low-power-enable;
-  };
- };
+&uart30 {
+ status = "okay";
+};
+&grtc {
+    status = "okay";
 };
 # 0 "<command-line>" 2
 # 1 "C:/ncs/v3.2.1/zephyr/misc/empty_file.c"

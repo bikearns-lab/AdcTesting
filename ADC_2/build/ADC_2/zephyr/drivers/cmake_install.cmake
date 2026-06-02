@@ -74,6 +74,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/zephyr/drivers/bluetooth/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/zephyr/drivers/cache/cmake_install.cmake")
 endif()
 
@@ -89,6 +94,16 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/zephyr/drivers/entropy/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/zephyr/drivers/flash/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/zephyr/drivers/gpio/cmake_install.cmake")
 endif()
 
@@ -100,11 +115,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
   include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/zephyr/drivers/serial/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/zephyr/drivers/spi/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)

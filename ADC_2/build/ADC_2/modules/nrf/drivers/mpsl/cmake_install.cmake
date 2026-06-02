@@ -39,6 +39,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/modules/nrf/drivers/mpsl/clock_control/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/modules/nrf/drivers/mpsl/flash_sync/cmake_install.cmake")
 endif()
 

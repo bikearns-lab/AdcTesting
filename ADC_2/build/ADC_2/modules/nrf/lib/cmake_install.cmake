@@ -44,16 +44,21 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/modules/nrf/lib/dk_buttons_and_leds/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/modules/nrf/lib/multithreading_lock/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/modules/nrf/lib/flash_patch/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
   include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/modules/nrf/lib/fatal_error/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/modules/nrf/lib/boot_banner/cmake_install.cmake")
 endif()
 

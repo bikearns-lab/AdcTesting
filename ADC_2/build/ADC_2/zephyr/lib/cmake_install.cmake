@@ -64,6 +64,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/zephyr/lib/net_buf/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/zephyr/lib/os/cmake_install.cmake")
 endif()
 

@@ -39,6 +39,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/modules/nrf/subsys/bluetooth/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/ncs/ncs-inter/l6/ADC_prototype/ADC_2/build/ADC_2/modules/nrf/subsys/nrf_security/cmake_install.cmake")
 endif()
 
