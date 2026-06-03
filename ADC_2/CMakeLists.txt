@@ -10,6 +10,7 @@ target_sources(app PRIVATE
   src/rtc_stim.c
   src/spi.c
   src/timer.c
+  src/ADC.c
 )
 
 if(CONFIG_BT)

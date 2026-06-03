@@ -1,289 +1,205 @@
+/*
+Author: Brandon S Coventry      Wisconsin Institute for Translational Neuroengineering
+Date: 2026/02/12 Initialization
+Purpose: Chronos firmware ported for the nRF54L15
+Revision History: See Github history
+Notes:
+ - Includes the ability to turn bluetooth transmission on and off in config file. Set CONFIG_BT in config file to 0 to turn off BLE engine
+ - Primary stimulation driver is still and interupt based routine. 
+*/
 
-
+/*Basic includes. Minimize to limit current draw from unused engines.*/
+//Zephyr includes
 #include <zephyr/kernel.h>
-#include <zephyr/logging/log.h>
-
-LOG_MODULE_REGISTER(Chronos_adc, LOG_LEVEL_DBG);
-
-/* STEP 2 - Include header for nrfx drivers */
-#include <nrfx_saadc.h>
-#include <nrfx_timer.h>
-#include <helpers/nrfx_gppi.h>
-// Include headers for zephyr SPI driver//
-#include <zephyr/logging/log.h>
-#include <zephyr/device.h>
+#include <zephyr/types.h>
+#include <zephyr/irq.h> //Interrupt service routine handlers
+#include <zephyr/device.h>  //Must import devicetree files
 #include <zephyr/devicetree.h>
-#include <zephyr/drivers/gpio.h>
-#include "BLE.h"
+#include <soc.h>    //Standard System on chip imports
+#include <zephyr/logging/log.h>   //Disable on compile
+#include <inttypes.h>
 
+#if defined(CONFIG_BT)
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/conn.h>
+#endif
 
+//nRFX imports. Note we are primarily runnig
+#include <nrfx_spim.h>
+#include <nrfx_timer.h>
+#include <zephyr/sys/atomic.h>
+#include <hal/nrf_gpio.h>
+#include <hal/nrf_clock.h>
+#if defined(CONFIG_NRFX_SAADC)
+#include <nrfx_saadc.h>
+#include <helpers/nrfx_gppi.h>
+#endif
+#if defined(CONFIG_SPI)
+#include <zephyr/drivers/spi.h>
+#endif
 
+//Chronos engine imports 
+#include "BLE.h"  //BLE engine
+#include "ble_session.h"
+#include "spi.h" //SPI to howland current source
+#include "timer.h"  //Handles interrupt timing of stimulation
+#include "rtc_stim.h"   //handles IRQ routines for stimulation
+#include "data.h"
+#include "config.h"   //Set compilation settings. Look here for CONFIG_BT
+#include "ADC.h"
 
-/* STEP 3.1 - Define the SAADC sample interval in microseconds */
-#define SAADC_SAMPLE_INTERVAL_US 500
+#define LOG_MODULE_NAME main
+LOG_MODULE_REGISTER(LOG_MODULE_NAME, LOG_LEVEL_INF);
 
-/* STEP 4.1 - Define the buffer size for the SAADC */
-#define SAADC_BUFFER_SIZE 16
+//Add UART Driver only if BLE is active. Note, UART is *virtual*, but still requires pin definitions. 
+#if defined(CONFIG_BT)
+#include <uart_async_adapter.h>
+#include <zephyr/drivers/uart.h>
+#include <zephyr/usb/usb_device.h>
+#endif
 
+//Set up peripherial initialization
+static void init_clock();   //Turn on stimulation timing engine
+#if defined(CONFIG_BT)
+BT_CONN_CB_DEFINE(conn_callbacks) = {
+	.connected        = connected,
+	.disconnected     = disconnected,
+	.recycled         = recycled_cb,
+#ifdef CONFIG_BT_NUS_SECURITY_ENABLED
+	.security_changed = security_changed,
+#endif
+};
+#endif /* CONFIG_BT */
 
-/* STEP 4.6 - Declare the struct to hold the configuration for the SAADC channel used to sample the battery voltage */
-#define SAADC_INPUT_PIN1 NRFX_ANALOG_EXTERNAL_AIN5
-//#define SAADC_INPUT_PIN2 NRFX_ANALOG_EXTERNAL_AIN2
-static nrfx_saadc_channel_t channel1 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN1, 0);
-//static nrfx_saadc_channel_t channel2 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN2, 0);
-//Define the SPI INIT
-//SPI worc set changed to 16, see what happens, change back to 8 if not helpful
-/* STEP 3.2 - Declaring an instance of nrfx_timer for TIMER2. */
-#define TIMER_INSTANCE_NUMBER NRF_TIMER22
-nrfx_timer_t timer_instance = NRFX_TIMER_INSTANCE(TIMER_INSTANCE_NUMBER);
-//New added up here hmmmmmm lets see
-/* STEP 4.2 - Declare the buffers for the SAADC */
-static int16_t saadc_sample_buffer[4][SAADC_BUFFER_SIZE];
-//establishing a message queue for SAADC filled buffer pointers
-K_MSGQ_DEFINE(ble_msgq, sizeof(int16_t *), 4, 4);
-//Begins the spi thread of communication//
-static void ble_thread(void *a, void *b, void *c) {
-    k_sem_take(&ble_init_ok, K_FOREVER);
-    int16_t *buf;
-    while (1) {
-        k_msgq_get(&ble_msgq, &buf, K_FOREVER);
-        if (!current_conn) {
-            continue;
-        }
-        ble_send_samples(buf, SAADC_BUFFER_SIZE);
-    }
+static void init_pins(void) {
+    /* SPI CS and switches are GPIO. When CONFIG_SPI=y the Zephyr driver owns DAC1_CS (P1.08 in Zephyr devicetree). */
+#if !defined(CONFIG_SPI)
+    nrf_gpio_cfg_output(DAC1_CS_PIN);
+    nrf_gpio_pin_set(DAC1_CS_PIN);   /* high (inactive) */
+#endif
+    nrf_gpio_cfg_output(DAC2_CS_PIN);
+    nrf_gpio_pin_set(DAC2_CS_PIN);   /* high (inactive) */
+    
+    // Switch GPIOs (DAC1/2 -> switch): all 0 at init (merged 0.02/0.03 line)
+    nrf_gpio_cfg_output(NRF_GPIO_PIN_MAP(1, 13));
+    nrf_gpio_pin_clear(NRF_GPIO_PIN_MAP(1, 13));
+    nrf_gpio_cfg_output(NRF_GPIO_PIN_MAP(1, 7));
+    nrf_gpio_pin_clear(NRF_GPIO_PIN_MAP(1, 7));
+    nrf_gpio_cfg_output(NRF_GPIO_PIN_MAP(1, 5));
+    nrf_gpio_pin_clear(NRF_GPIO_PIN_MAP(1, 5));
 }
-K_THREAD_DEFINE(ble_tid, 4096, ble_thread, NULL, NULL, NULL, 5, 0, 0);
-
-/* STEP 4.3 - Declare variable used to keep track of which buffer was last assigned to the SAADC driver */
-static uint32_t saadc_current_buffer = 2;
-
-
-
-static void configure_timer(void)
-{
-    nrfx_err_t err;
-
-    /* STEP 3.3 - Declaring timer config and intialize nrfx_timer instance. */
-    nrfx_timer_config_t timer_config = NRFX_TIMER_DEFAULT_CONFIG(1000000);
-    err = nrfx_timer_init(&timer_instance, &timer_config, NULL);
-    if (err !=0) {
-        LOG_ERR("nrfx_timer_init error: %08x", err);
-        return;
-    }
-
-    /* STEP 3.4 - Set compare channel 0 to generate event every SAADC_SAMPLE_INTERVAL_US. */
-    uint32_t timer_ticks = nrfx_timer_us_to_ticks(&timer_instance, SAADC_SAMPLE_INTERVAL_US);
-    nrfx_timer_extended_compare(&timer_instance, NRF_TIMER_CC_CHANNEL0, timer_ticks, NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, false);
-
-}
-
-static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
-{
-    nrfx_err_t err;
-    switch (p_event->type)
-    {
-
-        case NRFX_SAADC_EVT_READY:
-        
-           /* STEP 5.1 - Buffer is ready, timer (and sampling) can be started. */
-           nrfx_timer_enable(&timer_instance);
-
-            break;                        
-            
-       case NRFX_SAADC_EVT_BUF_REQ:
-        uint32_t next = saadc_current_buffer % 4;
-           err = nrfx_saadc_buffer_set(saadc_sample_buffer[next], SAADC_BUFFER_SIZE);
-            if (err != 0) {
-            LOG_ERR("nrfx_saadc_buffer_set error: %08x  init", err);
-            return;
-            }
-            saadc_current_buffer++;
-            break;
-         //   uint32_t next = saadc_current_buffer % 4;
-           // err = nrfx_saadc_buffer_set(saadc_sample_buffer[next], SAADC_BUFFER_SIZE);
-            //if (err != 0) {
-            //LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
-            //return;
-            //}
-            //saadc_current_buffer++;
-        
-            /* STEP 5.2 - Set up the next available buffer. Alternate through buffers 0-4 */
-           
-            
-
-           // err = nrfx_saadc_buffer_set(saadc_sample_buffer[(saadc_current_buffer++)%4], SAADC_BUFFER_SIZE);
-            //if (err != 0) {
-              //  LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
-                //return;
-            //}
-
-            //break;
-
-        case NRFX_SAADC_EVT_DONE:
-           
-
-           // err = nrfx_saadc_buffer_set(saadc_sample_buffer[next], SAADC_BUFFER_SIZE);
-            //if (err != 0) {
-            //LOG_ERR("nrfx_saadc_buffer_set error: %08x init", err);
-            //return;
-            //}
-           // saadc_current_buffer++;
-         /* STEP 5.3 - Buffer has been filled. Do something with the data and proceed */
-          /*  int64_t average = 0;
-            int16_t max = INT16_MIN;
-            int16_t min = INT16_MAX;
-            int16_t current_value; 
-            for(int i=0; i < p_event->data.done.size; i++){
-                current_value = ((int16_t *)(p_event->data.done.p_buffer))[i];
-                average += current_value;
-                if(current_value > max){
-                    max = current_value;
-                }
-                if(current_value < min){
-                    min = current_value;
-                }
-            }
-            average = average/p_event->data.done.size;
-            LOG_INF("SAADC buffer at 0x%x filled with %d samples", (uint32_t)p_event->data.done.p_buffer, p_event->data.done.size);
-            LOG_INF("AVG=%d, MIN=%d, MAX=%d", (int16_t)average, min, max);
-            break;*/
-        //default:
-          //  LOG_INF("Unhandled SAADC evt %d", p_event->type);
-           // break;
-
-            /* STEP 5.3 - Buffer has been filled. Do something with the data and proceed */ //This will be changed to instead pass the buffer through SPI to fRAM//
-
-         //  { int16_t *buf   = ((int16_t *)(p_event->data.done.p_buffer));
-           // uint16_t count = (p_event->data.done.size);   /* number of int16_t samples */
-
-           //  spi_send_samples(buf, count);
-
-                /* Re-arm the same buffer for the next fill */
-           // }
-           //puts message of filled buffer pointer into queue
-           int16_t *buf = p_event->data.done.p_buffer;
-           int ret = k_msgq_put(&ble_msgq, &buf, K_NO_WAIT);
-            if (ret != 0) {
-            LOG_ERR("BLE msgq full! Buffer dropped at 0x%x", (uint32_t)buf);
-            }
-            
-
-            break;
-             default:
-            LOG_INF("Unhandled SAADC evt %d", p_event->type);
-            break;
-        }     
-       
-
-}
-
-
-static void configure_saadc(void)
-{
-    nrfx_err_t err;
-
-    /* STEP 4.4 - Connect ADC interrupt to nrfx interrupt handler */
-    IRQ_CONNECT(DT_IRQN(DT_NODELABEL(adc)),
-              DT_IRQ(DT_NODELABEL(adc), priority),
-            nrfx_isr, nrfx_saadc_irq_handler, 0);
-    /* STEP 4.5 - Initialize the nrfx_SAADC driver */
-    err = nrfx_saadc_init(DT_IRQ(DT_NODELABEL(adc), priority));
-    if (err!= 0) {
-        LOG_ERR("nrfx_saadc_init error: %08x", err);
-        return;
-    }
-
-    /* STEP 4.7 - Change gain config in default config and apply channel configuration */
-    channel1.channel_config.gain = NRF_SAADC_GAIN1_4;
-    channel1.channel_config.reference= NRF_SAADC_REFERENCE_INTERNAL;
-    err = nrfx_saadc_channels_config(&channel1, 1);
-    if (err != 0) {
-        LOG_ERR("nrfx_saadc_channels_config error : %08x", err);
-        return;
-    }
-    //channel2.channel_config.gain = NRF_SAADC_GAIN1_4;
-    //channel2.channel_config.reference= NRF_SAADC_REFERENCE_INTERNAL;
-    //err = nrfx_saadc_channels_config(&channel2, 1);
-    //if (err != 0) {
-      //  LOG_ERR("nrfx_saadc_channels_config error : %08x",err);
-        //return;
-    //}
-
-    /* STEP 4.8 - Configure channel 0 in advanced mode with event handler (non-blocking mode) */
-
-    nrfx_saadc_adv_config_t saadc_adv_config = NRFX_SAADC_DEFAULT_ADV_CONFIG;
-    err = nrfx_saadc_advanced_mode_set(BIT(0),
-                                        NRF_SAADC_RESOLUTION_12BIT,
-                                        &saadc_adv_config,
-                                        saadc_event_handler);
-    if (err != 0) {
-        LOG_ERR("nrfx_saadc_advanced_mode_set error: %08x", err);
-        return;
-    }
-
-    /* STEP 4.9 - Configure two buffers to make use of double-buffering feature of SAADC */
-    err = nrfx_saadc_buffer_set(saadc_sample_buffer[0], SAADC_BUFFER_SIZE);
-    if (err != 0) {
-        LOG_ERR("nrfx_saadc_buffer_set error: %08x 1", err);
-        return;
-    }
-    err = nrfx_saadc_buffer_set(saadc_sample_buffer[1], SAADC_BUFFER_SIZE);
-    if (err != 0) {
-        LOG_ERR("nrfx_saadc_buffer_set error: %08x 2", err);
-        return;
-    }
-   // err = nrfx_saadc_buffer_set(saadc_sample_buffer[2], SAADC_BUFFER_SIZE);
-    //if (err != 0) {
-      //  LOG_ERR("nrfx_saadc_buffer_set error: %08x 3", err);
-        //return;
-    //}
-    //err = nrfx_saadc_buffer_set(saadc_sample_buffer[3], SAADC_BUFFER_SIZE);
-    //if (err != 0) {
-      //  LOG_ERR("nrfx_saadc_buffer_set error: %08x 4", err);
-        //return;
-    //}
-
-    /* STEP 4.10 - Trigger the SAADC. This will not start sampling, but will prepare buffer for sampling triggered through PPI */
-    err = nrfx_saadc_mode_trigger();
-    if (err != 0) {
-        LOG_ERR("nrfx_saadc_mode_trigger error: %08x", err);
-        return;
-    }
-
-}
-
-static void configure_ppi(void)
-{
-    nrfx_err_t err;
-    /* STEP 6.1 - Declare variables used to hold the (D)PPI channel number */
-    nrfx_gppi_handle_t gppi_handle_sample;
-    nrfx_gppi_handle_t gppi_handle_start;
-
-    /* STEP 6.2 - Trigger task sample from timer */
-    err = nrfx_gppi_conn_alloc( nrfx_timer_compare_event_address_get(&timer_instance, NRF_TIMER_CC_CHANNEL0),
-                                nrf_saadc_task_address_get(NRF_SAADC, NRF_SAADC_TASK_SAMPLE), &gppi_handle_sample);
-       if (err != 0) {
-        LOG_ERR("nrfx_gppi_conn_alloc error: %08x", err);
-        return;
-       }                        
-    /* STEP 6.3 - Trigger task start from end event */
-    err = nrfx_gppi_conn_alloc(nrf_saadc_event_address_get(NRF_SAADC, NRF_SAADC_EVENT_END),
-                                nrf_saadc_task_address_get(NRF_SAADC, NRF_SAADC_TASK_START), &gppi_handle_start);
-    if (err != 0) {
-        LOG_ERR("nrfx_gppi_conn_alloc error: %08x", err);
-        return;
-    } 
-    /* STEP 6.4 - Enable both (D)PPI channels */ 
-    nrfx_gppi_conn_enable(gppi_handle_sample);
-nrfx_gppi_conn_enable(gppi_handle_start);
-}
-
 
 int main(void)
-{ 
+{
+    //Begin with system initialization
+
+
+
+
+#if defined(CONFIG_BT)
+    init_clock();
+#endif
+    init_pins();
+#if defined(CONFIG_SPI)
+    /* Zephyr SPI test build: no nrfx SPI/timer activity here. */
+    k_msleep(10);
+#else
+    /* nrfx build: initialize SPI once; transactions are driven from timer ISR. */
+    spi_init();
+#endif
+#if defined(CONFIG_BT)
+    timer_init();
+#else
+    timer_burst_init();
+#endif
+    update_pulse_width(CONFIG_PULSE_WIDTH_US);
+    update_dac1_amplitude(CONFIG_STIM_AMPLITUDE);
+    update_dac2_amplitude(CONFIG_STIM_AMPLITUDE);
+
+    data_init_defaults();
+
+#if defined(CONFIG_BT)
+	/* Stimulation timer stays off until START control byte (see data.c). */
+	measurement_timer_init();
+	int err = 0;
+	uint32_t experiment_counter = 0;
+
+	configure_gpio();
+	err = uart_init();
+	if (err) {
+		error();
+	}
+
+	if (IS_ENABLED(CONFIG_BT_NUS_SECURITY_ENABLED)) {
+		err = bt_conn_auth_cb_register(&conn_auth_callbacks);
+		if (err) {
+			LOG_ERR("Failed to register authorization callbacks. (err: %d)", err);
+			return 0;
+		}
+
+		err = bt_conn_auth_info_cb_register(&conn_auth_info_callbacks);
+		if (err) {
+			LOG_ERR("Failed to register authorization info callbacks. (err: %d)", err);
+			return 0;
+		}
+	}
+
+	ble_session_init();
+	LOG_INF("Toggle reed P1.10 to enable BLE; stimulation off until START byte");
+
+
+	/* RUN_STATUS_LED is driven by ble_session (on while BLE session active). */
+	for (;;) {
+		if (MEASURE_TIMER == 1) {
+			k_msleep(10000);
+			experiment_counter += 10;
+			error_data my_error_data;
+			get_error_data(&my_error_data);
+			printf("Counter: %i Elapsed: %is\nEvent0 running error: %" PRIu32
+			       " avg error: %" PRIu32 " max error: %" PRIu32 "\n"
+			       "Events1-3 running error: %" PRIu32 " avg error: %" PRIu32
+			       " max error: %" PRIu32 ", %" PRIu32 ", %" PRIu32 "\n",
+			       my_error_data.mycounter,
+			       experiment_counter,
+			       my_error_data.event0_error,
+			       (my_error_data.event0_error / my_error_data.mycounter),
+			       my_error_data.event0_max,
+			       my_error_data.myerror,
+			       (my_error_data.myerror / my_error_data.mycounter),
+			       my_error_data.event1_max,
+			       my_error_data.event2_max,
+			       my_error_data.event3_max);
+		} else {
+			k_sleep(K_FOREVER);
+		}
+	}
+    #else
+        /* RTC low-power: no BLE; RTC wakes every stim period, timer runs one biphasic burst */
+        rtc_stim_start_lfclk();
+        rtc_stim_init(CONFIG_STIM_FREQUENCY_HZ);
+        LOG_INF("RTC-driven stimulation at %u Hz (no BLE)", CONFIG_STIM_FREQUENCY_HZ);
+        for (;;) {
+            k_sleep(K_FOREVER);
+        }
+    #endif /* CONFIG_BT */
+	#if (defined(CONFIG_NRFX_SAADC) && RUN_ADC == true)
     configure_timer(); 
     configure_saadc();
     configure_ppi(); 
-    k_sleep(K_FOREVER);
-}
+	#endif
+
+    }
+
+    K_THREAD_DEFINE(ble_write_thread_id, STACKSIZE, ble_write_thread, NULL, NULL,
+            NULL, PRIORITY, 0, 0);
+
+    static void init_clock() {
+#if !defined(CONFIG_SOC_NRF54L15)
+        nrf_clock_hfclk_src_set(NRF_CLOCK_S, NRF_CLOCK_HFCLK_HIGH_ACCURACY);
+#endif
+        nrf_clock_task_trigger(NRF_CLOCK_S, NRF_CLOCK_TASK_HFCLKSTART);
+        while (!nrf_clock_event_check(NRF_CLOCK_S, NRF_CLOCK_EVENT_HFCLKSTARTED)) {
+            /* spin */
+        }
+        nrf_clock_event_clear(NRF_CLOCK_S, NRF_CLOCK_EVENT_HFCLKSTARTED);
+    }

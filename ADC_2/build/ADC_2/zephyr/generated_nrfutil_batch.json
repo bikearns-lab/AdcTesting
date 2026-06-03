@@ -5,7 +5,7 @@
     {
       "core": "NRFDL_DEVICE_CORE_APPLICATION",
       "operation": {
-        "chip_erase_mode": "ERASE_ALL",
+        "chip_erase_mode": "ERASE_NONE",
         "firmware": {
           "file": "C:\\ncs\\ncs-inter\\l6\\ADC_prototype\\ADC_2\\build\\merged.hex"
         },

@@ -10,7 +10,6 @@
 #include <zephyr/drivers/uart.h>
 #ifdef CONFIG_UART_ASYNC_ADAPTER
 #include <uart_async_adapter.h>
-int ble_send_samples(int16_t *samples, size_t count);
 #endif
 #endif
 
@@ -97,7 +96,7 @@ void connected(struct bt_conn *conn, uint8_t err);
 void disconnected(struct bt_conn *conn, uint8_t reason);
 void recycled_cb(void);
 void bt_receive_cb(struct bt_conn *conn, const uint8_t *const data, uint16_t len);
-
+int ble_send_samples(int16_t *samples, size_t count);
 #ifdef CONFIG_BT_NUS_SECURITY_ENABLED
 void security_changed(struct bt_conn *conn, bt_security_t level,
 		      enum bt_security_err err);

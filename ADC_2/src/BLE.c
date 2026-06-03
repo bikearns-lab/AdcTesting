@@ -10,7 +10,7 @@
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
 #include <soc.h>
-
+bool RUN_ADC = false;
 #if defined(CONFIG_BT)
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/uuid.h>
@@ -114,11 +114,14 @@ void connected(struct bt_conn *conn, uint8_t err)
 	}
 
 	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+	RUN_ADC = true;
+	LOG_INF("Value of RUN_ADC: %d", RUN_ADC);
 	LOG_INF("Connected %s", addr);
 
 	current_conn = bt_conn_ref(conn);
 
 	dk_set_led_on(CON_STATUS_LED);
+
 }
 
 void disconnected(struct bt_conn *conn, uint8_t reason)
