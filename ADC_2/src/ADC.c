@@ -51,6 +51,34 @@ K_THREAD_DEFINE(ble_tid, 4096, ble_thread, NULL, NULL, NULL, 5, 0, 0);
 /* STEP 4.3 - Declare variable used to keep track of which buffer was last assigned to the SAADC driver */
 static uint32_t saadc_current_buffer = 2;
 
+/*functions to control adc recording and stopping*/
+static bool adc_active = false;
+bool adc_recording_is_active(void) {
+    return adc_active;
+}
+void adc_recording_start(void) {
+    if (adc_active) {
+        LOG_INF("SAADC already running");
+        return;
+    }
+    configure_timer();
+    configure_saadc();
+    configure_ppi();
+    adc_active=true;
+    LOG_INF("SAADC recording started");
+}
+void adc_recording_stop(void) {
+    if (!adc_active) {
+        LOG_INF("SAADC already stopped");
+        return;
+    }
+    nrfx_timer_disable(&timer_instance);
+    nrfx_timer_uninit(&timer_instance);
+    nrfx_saadc_uninit();
+    saadc_current_buffer = 2;
+    adc_active = false;
+    LOG_INF("SAADC recording stopped");
+}
 
 
 void configure_timer(void)
@@ -68,6 +96,7 @@ void configure_timer(void)
     /* STEP 3.4 - Set compare channel 0 to generate event every SAADC_SAMPLE_INTERVAL_US. */
     uint32_t timer_ticks = nrfx_timer_us_to_ticks(&timer_instance, SAADC_SAMPLE_INTERVAL_US);
     nrfx_timer_extended_compare(&timer_instance, NRF_TIMER_CC_CHANNEL0, timer_ticks, NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, false);
+    LOG_INF("nrfx timer22 configured successfully");
 
 }
 
@@ -225,6 +254,7 @@ void configure_saadc(void)
     if (err != 0) {
         LOG_ERR("nrfx_saadc_buffer_set error: %08x 2", err);
         return;
+        LOG_INF("nrfx saadc configured successfully");
     }
    // err = nrfx_saadc_buffer_set(saadc_sample_buffer[2], SAADC_BUFFER_SIZE);
     //if (err != 0) {

@@ -79,7 +79,7 @@
 &adc { status = "disabled"; };
 &timer20 { status = "okay"; };
 &timer21 { status = "disabled"; };
-&timer22 { status = "disabled"; };
+&timer22 { status = "okay"; };
 &timer23 { status = "disabled"; };
 &timer24 { status = "disabled"; };
 &wdt30 { status = "disabled"; };
@@ -110,4 +110,7 @@
 };
 &grtc {
     status = "okay";
+};
+&vregmain {
+    status = "disabled";
 };

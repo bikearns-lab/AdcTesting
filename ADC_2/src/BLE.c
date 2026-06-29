@@ -10,7 +10,6 @@
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
 #include <soc.h>
-bool RUN_ADC = false;
 #if defined(CONFIG_BT)
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/uuid.h>
@@ -114,8 +113,7 @@ void connected(struct bt_conn *conn, uint8_t err)
 	}
 
 	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
-	RUN_ADC = true;
-	LOG_INF("Value of RUN_ADC: %d", RUN_ADC);
+
 	LOG_INF("Connected %s", addr);
 
 	current_conn = bt_conn_ref(conn);
@@ -319,11 +317,17 @@ int ble_send_samples(int16_t *samples, size_t count)
 {
 #if defined(CONFIG_BT)
     if (!current_conn) {
+        LOG_WRN("ble_send_samples: no connection");
         return -ENOTCONN;
     }
 
-    int err = bt_nus_send(current_conn, (uint8_t *)samples, count * sizeof(int16_t));
-    if (err) {
+    size_t byte_count = count * sizeof(int16_t);
+
+    int err = bt_nus_send(current_conn, (uint8_t *)samples, byte_count);
+    if (err == -EINVAL) {
+        LOG_WRN("ble_send_samples: -EINVAL — notifications not enabled by peer "
+                "or payload too large (%d bytes)", byte_count);
+    } else if (err) {
         LOG_WRN("ble_send_samples failed: %d", err);
     }
     return err;

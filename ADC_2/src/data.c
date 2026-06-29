@@ -6,6 +6,7 @@
 #include "config.h"
 #include "spi.h"
 #include "timer.h"
+#include "ADC.h"
 
 stim_setting settings;
 stim_setting pending_settings;
@@ -40,41 +41,65 @@ static void stimulation_engine_start(const stim_setting *s)
 
 void process_received_data(stim_setting *active_settings, uint8_t *data, uint16_t len)
 {
-	if (len != STIM_PACKET_LEN) {
-		printf("BLE packet length %u (expected %u)\n", len, (unsigned int)STIM_PACKET_LEN);
-		return;
-	}
+    if (len == 0) {
+        printf("BLE packet empty\n");
+        return;
+    }
 
-	const uint8_t ctrl = data[0];
-	stim_setting payload;
+    const uint8_t ctrl = data[0];    // read ctrl byte FIRST
 
-	memcpy(&payload, data + 1, sizeof(payload));
+    /* --- Stimulation control --- */
+    if (ctrl == STIM_CTRL_START || ctrl == STIM_CTRL_STOP) {
+        if (len != STIM_PACKET_LEN) {
+            printf("Stim packet length %u (expected %u)\n", len, (unsigned int)STIM_PACKET_LEN);
+            return;
+        }
+        stim_setting payload;
+        memcpy(&payload, data + 1, sizeof(payload));
+        const bool running = timer_stimulation_is_enabled();
 
-	const bool running = timer_stimulation_is_enabled();
+        if (ctrl == STIM_CTRL_START) {
+            memcpy(active_settings, &payload, sizeof(stim_setting));
+            memcpy(&pending_settings, &payload, sizeof(stim_setting));
+            if (running) {
+                update_dac1_amplitude(payload.DAC_amplitude);
+                update_dac2_amplitude(payload.DAC_amplitude);
+                return;
+            }
+            stimulation_engine_start(active_settings);
+            return;
+        }
 
-	if (ctrl == STIM_CTRL_START) {
-		memcpy(active_settings, &payload, sizeof(stim_setting));
-		memcpy(&pending_settings, &payload, sizeof(stim_setting));
-		if (running) {
-			/* Refresh DAC codes mid-run; avoid update_stim_frequency (disables timer on BT). */
-			update_dac1_amplitude(payload.DAC_amplitude);
-			update_dac2_amplitude(payload.DAC_amplitude);
-			return;
-		}
-		stimulation_engine_start(active_settings);
-		return;
-	}
+        if (ctrl == STIM_CTRL_STOP) {
+            if (running) {
+                stim_timer_request_stop_after_burst();
+            } else {
+                memcpy(&pending_settings, &payload, sizeof(stim_setting));
+            }
+            return;
+        }
+    }
 
-	if (ctrl == STIM_CTRL_STOP) {
-		if (running) {
-			stim_timer_request_stop_after_burst();
-		} else {
-			memcpy(&pending_settings, &payload, sizeof(stim_setting));
-		}
-		return;
-	}
+    /* --- ADC recording control --- */
+    if (ctrl == ADC_CTRL_START) {
+        if (len != ADC_PACKET_LEN) {
+            printf("ADC packet length %u (expected %u)\n", len, (unsigned int)ADC_PACKET_LEN);
+            return;
+        }
+        adc_recording_start();
+        return;
+    }
 
-	printf("BLE unknown control byte 0x%02x\n", ctrl);
+    if (ctrl == ADC_CTRL_STOP) {
+        if (len != ADC_PACKET_LEN) {
+            printf("ADC packet length %u (expected %u)\n", len, (unsigned int)ADC_PACKET_LEN);
+            return;
+        }
+        adc_recording_stop();
+        return;
+    }
+
+    printf("BLE unknown control byte 0x%02x\n", ctrl);
 }
 
 #else /* !CONFIG_BT */

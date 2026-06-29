@@ -592,7 +592,7 @@
 				max-bit-width = < 0x20 >;        /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:440 */
 				interrupts = < 0xcc 0x1 >;       /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:441 */
 				prescaler = < 0x0 >;             /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:442 */
-				status = "disabled";             /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:82 */
+				status = "okay";                 /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:82 */
 			};
 
 			/* node '/soc/peripheral@50000000/timer@cd000' defined in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:445 */
@@ -922,8 +922,8 @@
 					compatible = "nordic,nrf5x-regulator"; /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:718 */
 					reg = < 0x120600 0x1 >;                /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:719 */
 					regulator-name = "VREGMAIN";           /* in zephyr\dts\vendor\nordic\nrf54l_05_10_15.dtsi:721 */
-					status = "okay";                       /* in zephyr\boards\nordic\nrf54l15dk\nrf54l_05_10_15_cpuapp_common.dtsi:49 */
 					regulator-initial-mode = < 0x1 >;      /* in zephyr\boards\nordic\nrf54l15dk\nrf54l_05_10_15_cpuapp_common.dtsi:50 */
+					status = "disabled";                   /* in ..\ncs-inter\l6\ADC_prototype\ADC_2\build\ADC_2\zephyr\nrf54dk_nrf54l15.overlay:115 */
 				};
 			};
 		};

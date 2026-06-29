@@ -1507,7 +1507,7 @@ wifi_spi: &spi22 {};
 &adc { status = "disabled"; };
 &timer20 { status = "okay"; };
 &timer21 { status = "disabled"; };
-&timer22 { status = "disabled"; };
+&timer22 { status = "okay"; };
 &timer23 { status = "disabled"; };
 &timer24 { status = "disabled"; };
 &wdt30 { status = "disabled"; };
@@ -1538,6 +1538,9 @@ wifi_spi: &spi22 {};
 };
 &grtc {
     status = "okay";
+};
+&vregmain {
+    status = "disabled";
 };
 # 0 "<command-line>" 2
 # 1 "C:/ncs/v3.2.1/zephyr/misc/empty_file.c"

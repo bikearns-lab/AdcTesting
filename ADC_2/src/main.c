@@ -182,11 +182,7 @@ int main(void)
             k_sleep(K_FOREVER);
         }
     #endif /* CONFIG_BT */
-	#if (defined(CONFIG_NRFX_SAADC) && RUN_ADC == true)
-    configure_timer(); 
-    configure_saadc();
-    configure_ppi(); 
-	#endif
+
 
     }
 

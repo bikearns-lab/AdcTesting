@@ -12,6 +12,10 @@ typedef struct {
 #define STIM_CTRL_STOP  0x00u
 #define STIM_CTRL_START 0x01u
 
+/*byte 2 and 3 of NUS payload: explicit run/stop of recording*/
+#define ADC_CTRL_START 0x02u
+#define ADC_CTRL_STOP 0x03u
+#define ADC_PACKET_LEN 1u
 #define STIM_PACKET_LEN (1u + sizeof(stim_setting))
 
 #define BLE_DATA_BUFFER_SIZE 32u
