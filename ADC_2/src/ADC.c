@@ -30,9 +30,9 @@ static nrfx_saadc_channel_t channel1 = NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT
 nrfx_timer_t timer_instance = NRFX_TIMER_INSTANCE(TIMER_INSTANCE_NUMBER);
 //New added up here hmmmmmm lets see
 /* STEP 4.2 - Declare the buffers for the SAADC */
-static int16_t saadc_sample_buffer[4][SAADC_BUFFER_SIZE];
+static int16_t saadc_sample_buffer[8][SAADC_BUFFER_SIZE];
 //establishing a message queue for SAADC filled buffer pointers
-K_MSGQ_DEFINE(ble_msgq, sizeof(int16_t *), 4, 4);
+K_MSGQ_DEFINE(ble_msgq, sizeof(int16_t *), 8, 4);
 //Begins the spi thread of communication//
 static void ble_thread(void *a, void *b, void *c) {
     k_sem_take(&ble_init_ok, K_FOREVER);
@@ -46,7 +46,7 @@ static void ble_thread(void *a, void *b, void *c) {
         LOG_INF("Sample sent succesfully!");
     }
 }
-K_THREAD_DEFINE(ble_tid, 4096, ble_thread, NULL, NULL, NULL, 5, 0, 0);
+K_THREAD_DEFINE(ble_tid, 4096, ble_thread, NULL, NULL, NULL, 3, 0, 0);
 
 /* STEP 4.3 - Declare variable used to keep track of which buffer was last assigned to the SAADC driver */
 static uint32_t saadc_current_buffer = 2;
@@ -114,7 +114,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
             break;                        
             
        case NRFX_SAADC_EVT_BUF_REQ:
-        uint32_t next = saadc_current_buffer % 4;
+        uint32_t next = saadc_current_buffer % 8;
            err = nrfx_saadc_buffer_set(saadc_sample_buffer[next], SAADC_BUFFER_SIZE);
             if (err != 0) {
             LOG_ERR("nrfx_saadc_buffer_set error: %08x  init", err);
